@@ -2,11 +2,7 @@ import { baseUrl } from "./ApiClient";
 
 const fetchBase = "http://localhost:8080";
 
-export const executeBasicAuthenticationService = (token) => {
-  return baseUrl.get(`/authenticate`, {
-    headers: { Authorization: token },
-  });
-};
+
 
 export const retriveAllPostByUser = (username) => {
   return baseUrl.get(`/users/${username}/todos`);

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { executeBasicAuthenticationService } from "../api/TodoApiService";
+import { executeJwtAuthenticationService } from "../api/AuthenticationApiService";
 import { baseUrl } from "../api/ApiClient";
 
 // Create a contex
@@ -30,19 +30,49 @@ export default function AuthProvider({ children }) {
   //     return false;
   //   }
   // }
+  // async function login(username, password) {
+  //   // token -> basic authentication token btoa base64 Encoding
+  //   const token = "Basic " + window.btoa(username + ":" + password);
+  //   try {
+  //     const response = await executeBasicAuthenticationService(token).then(
+  //       (res) => res
+  //     );
+  //     setAuthenticated(false);
+  //     if (response.status === 200) {
+  //       console.log("success");
+  //       setToken(token);
+  //       baseUrl.interceptors.request.use((config) => {
+  //         config.headers.Authorization = token;
+  //         return config;
+  //       });
+  //       setAuthenticated(true);
+  //       setUser(username);
+  //       return true;
+  //     } else {
+  //       logout();
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     logout();
+  //     return false;
+  //   }
+  // }
+
   async function login(username, password) {
-    // token -> basic authentication token btoa base64 Encoding
-    const token = "Basic " + window.btoa(username + ":" + password);
     try {
-      const response = await executeBasicAuthenticationService(token).then(
-        (res) => res
+      const response = await executeJwtAuthenticationService(
+        username,
+        password
       );
-      setAuthenticated(false);
+      console.log(response);
       if (response.status === 200) {
         console.log("success");
-        setToken(token);
+        const jwtToken = "Bearer " + response.data.token;
+        console.log(jwtToken);
+        setToken(jwtToken);
         baseUrl.interceptors.request.use((config) => {
-          config.headers.Authorization = token;
+          console.log("interceptors and adding a token");
+          config.headers.Authorization = jwtToken;
           return config;
         });
         setAuthenticated(true);
